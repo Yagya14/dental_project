@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BrightSmile Dental Clinic</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    /* ============ RESET & BASE ============ */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --primary:      #1B5E9B;
+      --primary-dark: #134880;
+      --accent:       #2EC4B6;
+      --accent-light: #E0F7F5;
+      --text:         #1F2937;
+      --muted:        #6B7280;
+      --bg:           #FFFFFF;
+      --bg-soft:      #F4F8FC;
+      --border:       #E5EDF5;
+      --radius:       12px;
+      --shadow:       0 4px 20px rgba(27,94,155,0.10);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ============ PAGE SWITCHING ============ */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ============ NAVBAR ============ */
+    .navbar {
+      position: sticky; top: 0; z-index: 999;
+      background: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 68px;
+      box-shadow: 0 2px 16px rgba(27,94,155,0.08);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 700; color: var(--primary);
+      cursor: pointer;
+    }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links button {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.95rem; font-weight: 500; color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      transition: color 0.2s;
+    }
+    .nav-links button:hover,
+    .nav-links button.active { color: var(--primary); }
+    .nav-book {
+      background: var(--primary); color: #fff;
+      padding: 0.5rem 1.3rem; border-radius: 50px;
+      border: none; cursor: pointer;
+      font-size: 0.9rem; font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s;
+    }
+    .nav-book:hover { background: var(--primary-dark); }
+    .hamburger {
+      display: none; font-size: 1.5rem;
+      cursor: pointer; color: var(--primary);
+      background: none; border: none;
+    }
+    .mobile-menu {
+      display: none; flex-direction: column; gap: 1rem;
+      background: #fff; padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 68px; z-index: 998;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu button {
+      background: none; border: none; cursor: pointer;
+      font-size: 1rem; font-weight: 500; color: var(--text);
+      font-family: 'DM Sans', sans-serif; text-align: left;
+    }
+
+    /* ============ BUTTONS ============ */
+    .btn-primary {
+      display: inline-block;
+      background: var(--primary); color: #fff;
+      padding: 0.75rem 2rem; border-radius: 50px;
+      font-size: 0.95rem; font-weight: 500;
+      border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-block;
+      background: transparent; color: var(--primary);
+      padding: 0.75rem 2rem; border-radius: 50px;
+      border: 2px solid var(--primary);
+      font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { background: var(--primary); color: #fff; }
+
+    .btn-white {
+      display: inline-block;
+      background: #fff; color: var(--primary);
+      padding: 0.75rem 2rem; border-radius: 50px;
+      font-size: 0.95rem; font-weight: 600;
+      border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-white:hover { background: var(--accent-light); }
+
+    /* ============ SHARED ============ */
+    .section-tag {
+      font-size: 0.82rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--accent); margin-bottom: 0.5rem;
+    }
+    .section-header { text-align: center; margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: 2rem; color: var(--text); }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--primary), #134880);
+      color: #fff; text-align: center;
+      padding: 4rem 5% 3.5rem;
+    }
+    .page-header .section-tag { color: rgba(255,255,255,0.85); }
+    .page-header h1 { font-size: 2.4rem; margin-bottom: 0.75rem; }
+    .page-header p { font-size: 1rem; opacity: 0.85; max-width: 520px; margin: 0 auto; }
+
+    .cta-section {
+      background: linear-gradient(135deg, var(--primary), #134880);
+      color: #fff; text-align: center; padding: 5rem 7%;
+    }
+    .cta-section h2 { font-size: 2rem; margin-bottom: 0.75rem; }
+    .cta-section p { font-size: 1rem; opacity: 0.85; margin-bottom: 2rem; }
+
+    /* ============ FOOTER ============ */
+    .footer { background: var(--text); color: #fff; padding: 3rem 7% 0; }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr;
+      gap: 2rem; padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .footer h3 { font-size: 1.2rem; margin-bottom: 0.75rem; color: #fff; }
+    .footer h4 {
+      font-size: 0.9rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .footer p, .footer li { font-size: 0.88rem; color: rgba(255,255,255,0.65); margin-bottom: 0.4rem; }
+    .footer ul li { margin-bottom: 0.5rem; }
+    .footer ul li button {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.88rem; color: rgba(255,255,255,0.65);
+      font-family: 'DM Sans', sans-serif; transition: color 0.2s;
+    }
+    .footer ul li button:hover { color: var(--accent); }
+    .footer-bottom {
+      padding: 1.25rem 0; text-align: center;
+      font-size: 0.82rem; color: rgba(255,255,255,0.4);
+    }
+
+    /* ============ PAGE 1: HOME ============ */
+    .hero {
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center; gap: 3rem;
+      padding: 5rem 7% 4rem; background: var(--bg-soft);
+      min-height: calc(100vh - 68px);
+    }
+    .hero-tag { font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 1rem; }
+    .hero-content h1 { font-size: 3rem; line-height: 1.2; margin-bottom: 1.2rem; }
+    .hero-content h1 span { color: var(--primary); }
+    .hero-sub { color: var(--muted); font-size: 1.05rem; max-width: 480px; margin-bottom: 2rem; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .hero-stats { display: flex; align-items: center; gap: 1.5rem; }
+    .stat strong { display: block; font-size: 1.5rem; color: var(--primary); font-family: 'Playfair Display', serif; }
+    .stat span { font-size: 0.82rem; color: var(--muted); }
+    .stat-div { width: 1px; height: 40px; background: var(--border); }
+    .hero-image { display: flex; justify-content: center; align-items: center; }
+    .hero-img-wrap { position: relative; width: 340px; height: 340px; display: flex; justify-content: center; align-items: center; }
+    .hero-circle { width: 280px; height: 280px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-light), #D0EBF9); position: absolute; }
+    .hero-icon-big { font-size: 7rem; position: relative; z-index: 1; filter: drop-shadow(0 8px 24px rgba(27,94,155,0.15)); }
+    .float-card { position: absolute; background: #fff; border-radius: 50px; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600; box-shadow: var(--shadow); white-space: nowrap; }
+    .card1 { top: 30px; left: -20px; color: var(--primary); }
+    .card2 { bottom: 50px; right: -20px; color: var(--text); }
+
+    .why-section { padding: 5rem 7%; background: #fff; }
+    .why-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; }
+    .why-card { background: var(--bg-soft); border-radius: var(--radius); padding: 2rem 1.5rem; text-align: center; border: 1px solid var(--border); transition: box-shadow 0.2s, transform 0.2s; }
+    .why-card:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
+    .why-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+    .why-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary); }
+    .why-card p { font-size: 0.9rem; color: var(--muted); }
+
+    .services-preview { padding: 5rem 7%; background: var(--bg-soft); }
+    .sp-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+    .sp-card { background: #fff; border-radius: var(--radius); padding: 2rem; border: 1px solid var(--border); transition: box-shadow 0.2s, transform 0.2s; }
+    .sp-card:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
+    .sp-card.hl { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .sp-card.hl p { color: rgba(255,255,255,0.8); }
+    .sp-card.hl .sp-link { color: var(--accent); }
+    .s-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .sp-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .sp-card p { font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem; }
+    .sp-link { font-size: 0.88rem; font-weight: 600; color: var(--primary); background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+    /* ============ PAGE 2: SERVICES ============ */
+    .services-full { padding: 4rem 7%; background: var(--bg-soft); }
+    .sbg { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5rem; }
+    .sb-card { background: #fff; border-radius: var(--radius); padding: 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start; border: 1px solid var(--border); transition: box-shadow 0.2s, transform 0.2s; }
+    .sb-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+    .sb-icon { font-size: 2.2rem; min-width: 52px; height: 52px; background: var(--accent-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+    .sb-content h3 { font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--primary); }
+    .sb-content p { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .price-tag { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 50px; }
+
+    /* ============ PAGE 3: APPOINTMENT ============ */
+    .appt-section { padding: 4rem 5%; background: var(--bg-soft); }
+    .appt-container { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; max-width: 1000px; margin: 0 auto; }
+    .appt-info { background: #fff; border-radius: var(--radius); padding: 1.75rem; border: 1px solid var(--border); align-self: start; }
+    .appt-info h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem; }
+    .hours-list li { display: flex; justify-content: space-between; font-size: 0.88rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+    .hours-list li span { color: var(--muted); }
+    .hours-list li.closed strong { color: #e53e3e; }
+    .doctor-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .doctor-item { display: flex; align-items: center; gap: 0.75rem; }
+    .doc-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent-light); color: var(--primary); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .doctor-item strong { display: block; font-size: 0.88rem; color: var(--text); }
+    .doctor-item span { font-size: 0.78rem; color: var(--muted); }
+    .info-note { margin-top: 1.5rem; background: var(--bg-soft); border-radius: 10px; padding: 1rem; font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+    .info-note strong { color: var(--primary); }
+
+    .appt-form-wrap { background: #fff; border-radius: var(--radius); padding: 2rem; border: 1px solid var(--border); }
+    .appt-form-wrap h2 { font-size: 1.5rem; color: var(--primary); margin-bottom: 1.5rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .form-group.full { margin-bottom: 1.25rem; }
+    label { font-size: 0.88rem; font-weight: 500; color: var(--text); }
+    input, select, textarea {
+      padding: 0.65rem 1rem; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 0.92rem;
+      font-family: 'DM Sans', sans-serif; color: var(--text);
+      background: #fff; transition: border-color 0.2s; outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+    input.error, select.error, textarea.error { border-color: #e53e3e; }
+    .error-msg { font-size: 0.78rem; color: #e53e3e; display: none; }
+    .error-msg.show { display: block; }
+    textarea { resize: vertical; min-height: 80px; }
+    .submit-btn { width: 100%; padding: 0.9rem; font-size: 1rem; margin-top: 0.5rem; }
+    .success-msg { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; font-size: 0.92rem; display: none; }
+    .success-msg.show { display: block; }
+
+    /* ============ PAGE 4: CONTACT ============ */
+    .about-section { padding: 5rem 7%; background: #fff; }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    .about-text p { font-size: 0.95rem; color: var(--muted); margin-top: 1rem; }
+    .about-text h2 { font-size: 1.8rem; margin-top: 0.4rem; }
+    .about-stats { display: flex; gap: 2rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+    .a-stat strong { display: block; font-size: 1.8rem; color: var(--primary); font-family: 'Playfair Display', serif; }
+    .a-stat span { font-size: 0.82rem; color: var(--muted); }
+    .about-img-box { width: 300px; height: 300px; background: linear-gradient(135deg, var(--accent-light), #D0EBF9); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.5rem; margin: 0 auto; }
+    .about-emoji { font-size: 5rem; }
+    .about-img-box p { font-weight: 600; color: var(--primary); font-size: 1rem; }
+    .about-img-box span { font-size: 0.85rem; color: var(--muted); }
+
+    .team-section { padding: 5rem 7%; background: var(--bg-soft); }
+    .team-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+    .team-card { background: #fff; border-radius: var(--radius); padding: 2rem; text-align: center; border: 1px solid var(--border); transition: box-shadow 0.2s, transform 0.2s; }
+    .team-card:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
+    .team-avatar { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1rem; font-size: 2.5rem; display: flex; align-items: center; justify-content: center; }
+    .team-card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+    .role-tag { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 0.78rem; font-weight: 600; padding: 0.2rem 0.75rem; border-radius: 50px; margin-bottom: 0.75rem; }
+    .team-card p { font-size: 0.88rem; color: var(--muted); }
+
+    .contact-section { padding: 5rem 7%; background: #fff; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+    .contact-details { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-card { display: flex; gap: 1rem; align-items: flex-start; background: var(--bg-soft); border-radius: var(--radius); padding: 1.25rem; border: 1px solid var(--border); }
+    .c-icon { font-size: 1.5rem; min-width: 42px; height: 42px; background: var(--accent-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .contact-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--primary); }
+    .contact-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+    .map-wrap { border-radius: var(--radius); overflow: hidden; height: 360px; border: 1px solid var(--border); }
+
+    .message-section { padding: 5rem 7%; background: var(--bg-soft); }
+    .message-form-wrap { max-width: 700px; margin: 0 auto; background: #fff; border-radius: var(--radius); padding: 2.5rem; border: 1px solid var(--border); }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 900px) {
+      .nav-links, .nav-book { display: none; }
+      .hamburger { display: block; }
+      .hero { grid-template-columns: 1fr; text-align: center; padding: 3rem 5%; min-height: auto; }
+      .hero-image { display: none; }
+      .hero-btns { justify-content: center; }
+      .hero-stats { justify-content: center; }
+      .hero-sub { margin: 0 auto 2rem; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .sp-grid { grid-template-columns: 1fr 1fr; }
+      .sbg { grid-template-columns: 1fr; }
+      .appt-container { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .why-grid, .sp-grid, .team-grid, .footer-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-content h1 { font-size: 2rem; }
+      .page-header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======== NAVBAR ======== -->
+  <nav class="navbar">
+    <div class="nav-logo" onclick="showPage('home')">🦷 BrightSmile</div>
+    <ul class="nav-links">
+      <li><button id="nav-home"        onclick="showPage('home')"        class="active">Home</button></li>
+      <li><button id="nav-services"    onclick="showPage('services')"            >Services</button></li>
+      <li><button id="nav-appointment" onclick="showPage('appointment')"         >Appointment</button></li>
+      <li><button id="nav-contact"     onclick="showPage('contact')"             >Contact</button></li>
+    </ul>
+    <button class="nav-book" onclick="showPage('appointment')">Book Now</button>
+    <button class="hamburger" onclick="toggleMenu()">&#9776;</button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button onclick="showPage('home');toggleMenu()">Home</button>
+    <button onclick="showPage('services');toggleMenu()">Services</button>
+    <button onclick="showPage('appointment');toggleMenu()">Appointment</button>
+    <button onclick="showPage('contact');toggleMenu()">Contact</button>
+  </div>
+
+
+  <!-- ======================================================
+       PAGE 1: HOME
+       ====================================================== -->
+  <div id="page-home" class="page active">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <p class="hero-tag">✨ Trusted Dental Care in Kathmandu</p>
+        <h1>Your Smile Deserves<br/><span>The Best Care</span></h1>
+        <p class="hero-sub">We provide gentle, affordable, and modern dental treatments for the whole family. Book your appointment today.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="showPage('appointment')">Book Appointment</button>
+          <button class="btn-outline" onclick="showPage('services')">Our Services</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong>500+</strong><span>Happy Patients</span></div>
+          <div class="stat-div"></div>
+          <div class="stat"><strong>10+</strong><span>Years Experience</span></div>
+          <div class="stat-div"></div>
+          <div class="stat"><strong>5</strong><span>Expert Doctors</span></div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-img-wrap">
+          <div class="hero-circle"></div>
+          <div class="hero-icon-big">🦷</div>
+          <div class="float-card card1">😁 Painless Treatment</div>
+          <div class="float-card card2">⭐ 4.9 Rating</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="why-section">
+      <div class="section-header">
+        <p class="section-tag">Why Choose Us</p>
+        <h2>We Care About Your Smile</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card"><div class="why-icon">🩺</div><h3>Expert Doctors</h3><p>Our experienced dentists are trained in the latest dental techniques and technologies.</p></div>
+        <div class="why-card"><div class="why-icon">💊</div><h3>Painless Procedures</h3><p>We use modern anesthesia methods to ensure a comfortable and pain-free experience.</p></div>
+        <div class="why-card"><div class="why-icon">🏥</div><h3>Modern Equipment</h3><p>Our clinic is fully equipped with state-of-the-art dental instruments and technology.</p></div>
+        <div class="why-card"><div class="why-icon">💰</div><h3>Affordable Prices</h3><p>Quality dental care should be accessible. We offer competitive and transparent pricing.</p></div>
+      </div>
+    </section>
+
+    <!-- Services Preview -->
+    <section class="services-preview">
+      <div class="section-header">
+        <p class="section-tag">What We Offer</p>
+        <h2>Our Popular Services</h2>
+      </div>
+      <div class="sp-grid">
+        <div class="sp-card">
+          <div class="s-icon">🦷</div>
+          <h3>Teeth Cleaning</h3>
+          <p>Professional cleaning to remove plaque and keep your teeth healthy.</p>
+          <button class="sp-link" onclick="showPage('services')">Learn more →</button>
+        </div>
+        <div class="sp-card hl">
+          <div class="s-icon">✨</div>
+          <h3>Teeth Whitening</h3>
+          <p>Get a brighter, whiter smile with our safe whitening treatments.</p>
+          <button class="sp-link" onclick="showPage('services')">Learn more →</button>
+        </div>
+        <div class="sp-card">
+          <div class="s-icon">🔧</div>
+          <h3>Braces & Aligners</h3>
+          <p>Straighten your teeth with modern braces or invisible aligners.</p>
+          <button class="sp-link" onclick="showPage('services')">Learn more →</button>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:2rem;">
+        <button class="btn-primary" onclick="showPage('services')">View All Services</button>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <h2>Ready for a Healthier Smile?</h2>
+      <p>Book your appointment today and let our experts take care of your dental health.</p>
+      <button class="btn-white" onclick="showPage('appointment')">Book an Appointment</button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-grid">
+        <div><h3>🦷 BrightSmile</h3><p>Quality dental care for the whole family in the heart of Kathmandu.</p></div>
+        <div><h4>Quick Links</h4><ul>
+          <li><button onclick="showPage('home')">Home</button></li>
+          <li><button onclick="showPage('services')">Services</button></li>
+          <li><button onclick="showPage('appointment')">Appointment</button></li>
+          <li><button onclick="showPage('contact')">Contact</button></li>
+        </ul></div>
+        <div><h4>Contact</h4><p>📍 Thamel, Kathmandu</p><p>📞 +977-01-4567890</p><p>📧 info@brightsmile.com.np</p></div>
+      </div>
+      <div class="footer-bottom"><p>© 2025 BrightSmile Dental Clinic. All rights reserved.</p></div>
+    </footer>
+  </div>
+
+
+  <!-- ======================================================
+       PAGE 2: SERVICES
+       ====================================================== -->
+  <div id="page-services" class="page">
+
+    <section class="page-header">
+      <p class="section-tag">What We Offer</p>
+      <h1>Our Dental Services</h1>
+      <p>Comprehensive dental care for every need — from routine check-ups to advanced treatments.</p>
+    </section>
+
+    <section class="services-full">
+      <div class="sbg">
+        <div class="sb-card"><div class="sb-icon">🦷</div><div class="sb-content"><h3>Teeth Cleaning & Scaling</h3><p>Professional cleaning removes plaque, tartar, and stains that regular brushing can't handle. Recommended every 6 months.</p><span class="price-tag">From Rs. 800</span></div></div>
+        <div class="sb-card"><div class="sb-icon">✨</div><div class="sb-content"><h3>Teeth Whitening</h3><p>Our safe, effective whitening treatment brightens your smile by several shades in just one session.</p><span class="price-tag">From Rs. 3,500</span></div></div>
+        <div class="sb-card"><div class="sb-icon">🔧</div><div class="sb-content"><h3>Braces & Aligners</h3><p>Correct misaligned teeth with traditional metal braces or modern clear aligners. Customized treatment plans for each patient.</p><span class="price-tag">From Rs. 25,000</span></div></div>
+        <div class="sb-card"><div class="sb-icon">💉</div><div class="sb-content"><h3>Dental Fillings</h3><p>Tooth-colored composite fillings to restore decayed or damaged teeth naturally and durably.</p><span class="price-tag">From Rs. 1,200</span></div></div>
+        <div class="sb-card"><div class="sb-icon">🦴</div><div class="sb-content"><h3>Tooth Extraction</h3><p>Gentle extraction procedure with minimal discomfort and fast recovery. Wisdom tooth removal also available.</p><span class="price-tag">From Rs. 1,000</span></div></div>
+        <div class="sb-card"><div class="sb-icon">👑</div><div class="sb-content"><h3>Dental Crowns & Bridges</h3><p>Restore broken or missing teeth with custom-made crowns and bridges that look and feel natural.</p><span class="price-tag">From Rs. 8,000</span></div></div>
+        <div class="sb-card"><div class="sb-icon">🌱</div><div class="sb-content"><h3>Dental Implants</h3><p>Permanently replace missing teeth with titanium implants that fuse with your jawbone for a strong result.</p><span class="price-tag">From Rs. 45,000</span></div></div>
+        <div class="sb-card"><div class="sb-icon">👶</div><div class="sb-content"><h3>Children's Dentistry</h3><p>Gentle and friendly dental care for kids including check-ups, fluoride treatments, and orthodontic assessments.</p><span class="price-tag">From Rs. 600</span></div></div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Need a Service? Book Today!</h2>
+      <p>Our team is ready to help. Schedule your visit at a time that suits you.</p>
+      <button class="btn-white" onclick="showPage('appointment')">Book an Appointment</button>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div><h3>🦷 BrightSmile</h3><p>Quality dental care for the whole family in the heart of Kathmandu.</p></div>
+        <div><h4>Quick Links</h4><ul>
+          <li><button onclick="showPage('home')">Home</button></li>
+          <li><button onclick="showPage('services')">Services</button></li>
+          <li><button onclick="showPage('appointment')">Appointment</button></li>
+          <li><button onclick="showPage('contact')">Contact</button></li>
+        </ul></div>
+        <div><h4>Contact</h4><p>📍 Thamel, Kathmandu</p><p>📞 +977-01-4567890</p><p>📧 info@brightsmile.com.np</p></div>
+      </div>
+      <div class="footer-bottom"><p>© 2025 BrightSmile Dental Clinic. All rights reserved.</p></div>
+    </footer>
+  </div>
+
+
+  <!-- ======================================================
+       PAGE 3: APPOINTMENT
+       ====================================================== -->
+  <div id="page-appointment" class="page">
+
+    <section class="page-header">
+      <p class="section-tag">Easy Booking</p>
+      <h1>Book an Appointment</h1>
+      <p>Fill in the form below and we will confirm your appointment shortly.</p>
+    </section>
+
+    <section class="appt-section">
+      <div class="appt-container">
+
+        <!-- Sidebar -->
+        <div class="appt-info">
+          <h3>Clinic Hours</h3>
+          <ul class="hours-list">
+            <li><span>Sunday – Friday</span><strong>9:00 AM – 6:00 PM</strong></li>
+            <li><span>Saturday</span><strong>10:00 AM – 3:00 PM</strong></li>
+            <li class="closed"><span>Public Holidays</span><strong>Closed</strong></li>
+          </ul>
+          <h3 style="margin-top:2rem;">Our Doctors</h3>
+          <div class="doctor-list">
+            <div class="doctor-item"><div class="doc-avatar">DR</div><div><strong>Dr. Rajesh Sharma</strong><span>General Dentist</span></div></div>
+            <div class="doctor-item"><div class="doc-avatar">DP</div><div><strong>Dr. Priya Thapa</strong><span>Orthodontist</span></div></div>
+            <div class="doctor-item"><div class="doc-avatar">DA</div><div><strong>Dr. Anish Karki</strong><span>Oral Surgeon</span></div></div>
+          </div>
+          <div class="info-note">📞 You can also call us at<br/><strong>+977-01-4567890</strong></div>
+        </div>
+
+        <!-- Form -->
+        <div class="appt-form-wrap">
+          <h2>Patient Details</h2>
+          <div class="success-msg" id="apptSuccess">✅ Appointment booked successfully! We will contact you to confirm.</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" id="fullName" placeholder="e.g. Arjun Pandey"/>
+              <span class="error-msg" id="nameErr">Please enter your full name.</span>
+            </div>
+            <div class="form-group">
+              <label>Age *</label>
+              <input type="number" id="age" placeholder="e.g. 25" min="1" max="120"/>
+              <span class="error-msg" id="ageErr">Please enter a valid age (1–120).</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" id="phone" placeholder="e.g. 9841234567"/>
+              <span class="error-msg" id="phoneErr">Please enter a valid 10-digit number.</span>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="email" placeholder="e.g. arjun@email.com"/>
+              <span class="error-msg" id="emailErr">Please enter a valid email.</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Appointment Date *</label>
+              <input type="date" id="apptDate"/>
+              <span class="error-msg" id="dateErr">Please select a valid future date.</span>
+            </div>
+            <div class="form-group">
+              <label>Preferred Time *</label>
+              <select id="apptTime">
+                <option value="">-- Select a time --</option>
+                <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+                <option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option>
+                <option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option>
+              </select>
+              <span class="error-msg" id="timeErr">Please select a time.</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Select Doctor *</label>
+              <select id="doctor">
+                <option value="">-- Choose a doctor --</option>
+                <option>Dr. Rajesh Sharma (General Dentist)</option>
+                <option>Dr. Priya Thapa (Orthodontist)</option>
+                <option>Dr. Anish Karki (Oral Surgeon)</option>
+                <option>Any Available Doctor</option>
+              </select>
+              <span class="error-msg" id="doctorErr">Please select a doctor.</span>
+            </div>
+            <div class="form-group">
+              <label>Service Needed *</label>
+              <select id="service">
+                <option value="">-- Select service --</option>
+                <option>Teeth Cleaning & Scaling</option>
+                <option>Teeth Whitening</option>
+                <option>Braces & Aligners</option>
+                <option>Dental Fillings</option>
+                <option>Tooth Extraction</option>
+                <option>Dental Crowns & Bridges</option>
+                <option>Dental Implants</option>
+                <option>Children's Dentistry</option>
+                <option>General Check-up</option>
+              </select>
+              <span class="error-msg" id="serviceErr">Please select a service.</span>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>Additional Notes (Optional)</label>
+            <textarea id="notes" rows="3" placeholder="Describe your symptoms or any special requests..."></textarea>
+          </div>
+
+          <button class="btn-primary submit-btn" onclick="submitAppointment()">Confirm Appointment</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div><h3>🦷 BrightSmile</h3><p>Quality dental care for the whole family in the heart of Kathmandu.</p></div>
+        <div><h4>Quick Links</h4><ul>
+          <li><button onclick="showPage('home')">Home</button></li>
+          <li><button onclick="showPage('services')">Services</button></li>
+          <li><button onclick="showPage('appointment')">Appointment</button></li>
+          <li><button onclick="showPage('contact')">Contact</button></li>
+        </ul></div>
+        <div><h4>Contact</h4><p>📍 Thamel, Kathmandu</p><p>📞 +977-01-4567890</p><p>📧 info@brightsmile.com.np</p></div>
+      </div>
+      <div class="footer-bottom"><p>© 2025 BrightSmile Dental Clinic. All rights reserved.</p></div>
+    </footer>
+  </div>
+
+
+  <!-- ======================================================
+       PAGE 4: CONTACT / ABOUT
+       ====================================================== -->
+  <div id="page-contact" class="page">
+
+    <section class="page-header">
+      <p class="section-tag">Get in Touch</p>
+      <h1>Contact & About Us</h1>
+      <p>Find us, reach out, or learn more about our clinic and team.</p>
+    </section>
+
+    <!-- About -->
+    <section class="about-section">
+      <div class="about-grid">
+        <div class="about-text">
+          <p class="section-tag">About Our Clinic</p>
+          <h2>BrightSmile Dental Clinic</h2>
+          <p>Founded in 2015, BrightSmile Dental Clinic has been providing high-quality, patient-centered dental care to families across Kathmandu. We believe that good oral health is the foundation of overall well-being.</p>
+          <p style="margin-top:1rem;">Our team of experienced dentists uses modern techniques and equipment to ensure you receive the best treatment possible — all in a clean, welcoming environment.</p>
+          <div class="about-stats">
+            <div class="a-stat"><strong>500+</strong><span>Patients Served</span></div>
+            <div class="a-stat"><strong>10</strong><span>Years Open</span></div>
+            <div class="a-stat"><strong>5</strong><span>Doctors</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="about-img-box">
+            <div class="about-emoji">🏥</div>
+            <p>BrightSmile Dental Clinic</p>
+            <span>Thamel, Kathmandu</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section class="team-section">
+      <div class="section-header">
+        <p class="section-tag">Meet the Team</p>
+        <h2>Our Doctors</h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar" style="background:#E8F4FD;">👨‍⚕️</div>
+          <h3>Dr. Rajesh Sharma</h3>
+          <span class="role-tag">General Dentist</span>
+          <p>10+ years of experience in general dentistry, fillings, extractions, and preventive care.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:#FDE8F4;">👩‍⚕️</div>
+          <h3>Dr. Priya Thapa</h3>
+          <span class="role-tag">Orthodontist</span>
+          <p>Specialist in braces and aligners. Passionate about creating confident, beautiful smiles.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:#E8FDF0;">👨‍⚕️</div>
+          <h3>Dr. Anish Karki</h3>
+          <span class="role-tag">Oral Surgeon</span>
+          <p>Expert in dental implants, wisdom tooth removal, and complex oral surgery procedures.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact + Map -->
+    <section class="contact-section">
+      <div class="section-header">
+        <p class="section-tag">Find Us</p>
+        <h2>Location & Contact</h2>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-details">
+          <div class="contact-card"><div class="c-icon">📍</div><div><h4>Address</h4><p>Thamel Marg, Thamel<br/>Kathmandu, Nepal 44600</p></div></div>
+          <div class="contact-card"><div class="c-icon">📞</div><div><h4>Phone</h4><p>+977-01-4567890<br/>+977-9841234567</p></div></div>
+          <div class="contact-card"><div class="c-icon">📧</div><div><h4>Email</h4><p>info@brightsmile.com.np</p></div></div>
+          <div class="contact-card"><div class="c-icon">🕐</div><div><h4>Working Hours</h4><p>Sun – Fri: 9:00 AM – 6:00 PM<br/>Saturday: 10:00 AM – 3:00 PM<br/>Public Holidays: Closed</p></div></div>
+        </div>
+        <div class="map-wrap">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3531.7!2d85.3090!3d27.7153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb18fcb77fd4bd%3A0x58099b1db7de8fe!2sThamel%2C%20Kathmandu!5e0!3m2!1sen!2snp!4v1234567890"
+            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- Message form -->
+    <section class="message-section">
+      <div class="section-header">
+        <p class="section-tag">Write to Us</p>
+        <h2>Send a Message</h2>
+      </div>
+      <div class="message-form-wrap">
+        <div class="success-msg" id="contactSuccess">✅ Message sent! We will get back to you within 24 hours.</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" id="cName" placeholder="Full name"/>
+            <span class="error-msg" id="cNameErr">Please enter your name.</span>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="cEmail" placeholder="your@email.com"/>
+            <span class="error-msg" id="cEmailErr">Please enter a valid email.</span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>Message *</label>
+          <textarea id="cMessage" rows="4" placeholder="How can we help you?"></textarea>
+          <span class="error-msg" id="cMsgErr">Please enter a message.</span>
+        </div>
+        <button class="btn-primary submit-btn" onclick="submitContact()">Send Message</button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div><h3>🦷 BrightSmile</h3><p>Quality dental care for the whole family in the heart of Kathmandu.</p></div>
+        <div><h4>Quick Links</h4><ul>
+          <li><button onclick="showPage('home')">Home</button></li>
+          <li><button onclick="showPage('services')">Services</button></li>
+          <li><button onclick="showPage('appointment')">Appointment</button></li>
+          <li><button onclick="showPage('contact')">Contact</button></li>
+        </ul></div>
+        <div><h4>Contact</h4><p>📍 Thamel, Kathmandu</p><p>📞 +977-01-4567890</p><p>📧 info@brightsmile.com.np</p></div>
+      </div>
+      <div class="footer-bottom"><p>© 2025 BrightSmile Dental Clinic. All rights reserved.</p></div>
+    </footer>
+  </div>
+
+
+  <!-- ======================================================
+       JAVASCRIPT
+       ====================================================== -->
+  <script>
+    // ---- PAGE NAVIGATION ----
+    function showPage(name) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      // Show selected
+      document.getElementById('page-' + name).classList.add('active');
+      // Update nav active state
+      document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+      const navBtn = document.getElementById('nav-' + name);
+      if (navBtn) navBtn.classList.add('active');
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Set min date when appointment page opens
+      if (name === 'appointment') setMinDate();
+    }
+
+    // ---- MOBILE MENU ----
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    // ---- SET MIN DATE ----
+    function setMinDate() {
+      const d = document.getElementById('apptDate');
+      if (d) d.min = new Date().toISOString().split('T')[0];
+    }
+
+    // ---- HELPERS ----
+    function val(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+    function showErr(inputId, errId) {
+      const el = document.getElementById(inputId);
+      const er = document.getElementById(errId);
+      if (el) el.classList.add('error');
+      if (er) er.classList.add('show');
+    }
+    function clearErr(inputId, errId) {
+      const el = document.getElementById(inputId);
+      const er = document.getElementById(errId);
+      if (el) el.classList.remove('error');
+      if (er) er.classList.remove('show');
+    }
+
+    // ---- APPOINTMENT FORM ----
+    function submitAppointment() {
+      let ok = true;
+
+      if (!val('fullName'))                    { showErr('fullName','nameErr');   ok=false; } else clearErr('fullName','nameErr');
+      const age = parseInt(val('age'));
+      if (isNaN(age)||age<1||age>120)          { showErr('age','ageErr');         ok=false; } else clearErr('age','ageErr');
+      if (!/^\d{10}$/.test(val('phone')))      { showErr('phone','phoneErr');     ok=false; } else clearErr('phone','phoneErr');
+      const em = val('email');
+      if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { showErr('email','emailErr'); ok=false; } else clearErr('email','emailErr');
+      const today = new Date().toISOString().split('T')[0];
+      if (!val('apptDate')||val('apptDate')<today) { showErr('apptDate','dateErr'); ok=false; } else clearErr('apptDate','dateErr');
+      if (!val('apptTime'))                    { showErr('apptTime','timeErr');    ok=false; } else clearErr('apptTime','timeErr');
+      if (!val('doctor'))                      { showErr('doctor','doctorErr');    ok=false; } else clearErr('doctor','doctorErr');
+      if (!val('service'))                     { showErr('service','serviceErr');  ok=false; } else clearErr('service','serviceErr');
+
+      if (ok) {
+        const msg = document.getElementById('apptSuccess');
+        msg.classList.add('show');
+        msg.scrollIntoView({ behavior:'smooth', block:'center' });
+        ['fullName','age','phone','email','apptDate','apptTime','doctor','service','notes']
+          .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+        setTimeout(() => msg.classList.remove('show'), 6000);
+      }
+    }
+
+    // ---- CONTACT FORM ----
+    function submitContact() {
+      let ok = true;
+
+      if (!val('cName'))                                          { showErr('cName','cNameErr');   ok=false; } else clearErr('cName','cNameErr');
+      if (!val('cEmail')||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val('cEmail'))) { showErr('cEmail','cEmailErr'); ok=false; } else clearErr('cEmail','cEmailErr');
+      if (!val('cMessage'))                                       { showErr('cMessage','cMsgErr'); ok=false; } else clearErr('cMessage','cMsgErr');
+
+      if (ok) {
+        const msg = document.getElementById('contactSuccess');
+        msg.classList.add('show');
+        msg.scrollIntoView({ behavior:'smooth', block:'center' });
+        ['cName','cEmail','cMessage'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+        setTimeout(() => msg.classList.remove('show'), 6000);
+      }
+    }
+
+    // ---- LIVE CLEAR ERRORS ----
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('input, select, textarea').forEach(function(field) {
+        field.addEventListener('input', function() {
+          field.classList.remove('error');
+          const next = field.nextElementSibling;
+          if (next && next.classList.contains('error-msg')) next.classList.remove('show');
+        });
+      });
+      setMinDate();
+    });
+  </script>
+
+</body>
+</html>
